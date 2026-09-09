@@ -1,6 +1,6 @@
 import {test} from '@playwright/test';
 
-test.only('SauceDemo E2E Test', async ({page})=> {
+test ('SauceDemo E2E Test', async ({page})=> {
 //login to application
 await page.goto('https://www.saucedemo.com/');
 await page.pause();
