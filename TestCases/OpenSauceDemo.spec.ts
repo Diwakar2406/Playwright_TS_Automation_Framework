@@ -15,17 +15,13 @@ test('Open SauceDemo App and Close It', async ({page}) => {
     const orderConfirmationPage = new OrderConfirmationPage(page);
 
 // Login
-    await page.waitForTimeout(2000); // Wait for 2 seconds before opening the app
     loginPage.OpenSauceDemoApp();
     await loginPage.LoginToSauceDemoApp('standard_user', 'secret_sauce');
-    await page.waitForTimeout(2000); // Wait for 2 seconds before closing the app
-    
+
 // Add to Cart and Checkout
     await homePage.AddItemToCart();
-    await page.waitForTimeout(2000); // Wait for 2 seconds before logging out
 
     await yourCartPage.ClickOnCheckoutButton();
-    await page.waitForTimeout(2000); // Wait for 2 seconds before logging out
 
 // Fill Your Info
     await yourInfoPage.FillYourInfo('John', 'Doe', '12345');
