@@ -1,12 +1,12 @@
-import {test} from '@playwright/test';
+import {test, expect} from '@playwright/test';
 
 test ('SauceDemo E2E Test', async ({page})=> {
 //login to application
 await page.goto('https://www.saucedemo.com/');
-await page.pause();
 await page.locator('#user-name').fill('standard_user');
 await page.locator('#password').fill('secret_sauce');
 await page.locator('#login-button').click();
+expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
 
 //add items to cart
 await page.locator('#add-to-cart-sauce-labs-backpack').click();
