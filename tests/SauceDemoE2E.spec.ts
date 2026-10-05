@@ -1,56 +1,47 @@
-import {test, expect} from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-test ('SauceDemo E2E Test', async ({page})=> {
-//login to application
-await page.goto('https://www.saucedemo.com/');
-await page.locator('#user-name').fill('standard_user');
-await page.locator('#password').fill('secret_sauce');
-await page.locator('#login-button').click();
-expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
+test('SauceDemo E2E Test with assertions and CI/CD ready', async ({ page }) => {
+  // This flow is suitable for CI/CD runs in GitHub Actions and validates the purchase journey end-to-end.
+  await page.goto('https://www.saucedemo.com/');
 
-//add items to cart
-await page.locator('#add-to-cart-sauce-labs-backpack').click();
+  await expect(page).toHaveTitle(/Swag Labs/);
+  await page.locator('#user-name').fill('standard_user');
+  await page.locator('#password').fill('secret_sauce');
+  await page.locator('#login-button').click();
 
-//click on cart logo
-await page.locator('#shopping_cart_container').click();
+  await expect(page).toHaveURL(/.*inventory\.html/);
+  await expect(page.locator('.title')).toHaveText('Products');
 
-//click on checkout
-await page.locator('#checkout').click();
+  await page.locator('#add-to-cart-sauce-labs-backpack').click();
+  await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
 
-//enter details
-await page.locator('#first-name').fill('surendra');
-await page.locator('#last-name').fill('kumar');
-await page.locator('#postal-code').fill('500018');
+  await page.locator('#shopping_cart_container').click();
+  await expect(page).toHaveURL(/.*cart\.html/);
+  await expect(page.locator('.title')).toHaveText('Your Cart');
 
-//click on continue
-await page.locator('#continue').click();
+  await page.locator('#checkout').click();
+  await expect(page).toHaveURL(/.*checkout-step-one\.html/);
 
-//click on finish
-await page.locator('#finish').click();
+  await page.locator('#first-name').fill('surendra');
+  await page.locator('#last-name').fill('kumar');
+  await page.locator('#postal-code').fill('500018');
+  await page.locator('#continue').click();
 
-//validate the message , click on back to home
-const confirmMessage = await page.locator('.complete-header').textContent();
-console.log('message is '+confirmMessage);
-await page.locator('#back-to-products').click();
+  await expect(page).toHaveURL(/.*checkout-step-two\.html/);
+  await expect(page.locator('.summary_total_label')).toContainText('Total');
 
-//logout from the application
-await page.locator('#react-burger-menu-btn').click();
-await page.locator('#logout_sidebar_link').click();
+  await page.locator('#finish').click();
 
-await page.close();
-/*
-login to application 
-add items to cart
-go to cart
-checkout
-enter details
-finish
-validate the message , click on back to home
-logout from the application
+  const confirmMessage = page.locator('.complete-header');
+  await expect(confirmMessage).toHaveText('Thank you for your order!');
+  await expect(page.locator('#back-to-products')).toBeVisible();
 
-*/
+  await page.locator('#back-to-products').click();
+  await expect(page.locator('.title')).toHaveText('Products');
 
-
-})
+  await page.locator('#react-burger-menu-btn').click();
+  await page.locator('#logout_sidebar_link').click();
+  await expect(page).toHaveURL('https://www.saucedemo.com/');
+});
 
 

@@ -315,6 +315,8 @@ These are created by Playwright when running tests and help with:
 
 ## How to Run the Tests
 
+CI/CD note: this project is already set up for continuous integration and delivery through the GitHub Actions workflow in `.github/workflows/playwright.yml`, which installs dependencies, downloads browsers, and runs the Playwright suite on push and pull request events.
+
 Install dependencies:
 
 ```bash
